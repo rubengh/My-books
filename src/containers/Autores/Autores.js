@@ -22,12 +22,21 @@ import TableRow from '@material-ui/core/TableRow';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 
 const styles = theme => ({
     father : {
         position: "relative",
         padding: "10px",
+      },
+      
+      addButton: {
+        position: 'absolute',
+        top: '0px',
+        right: '0px',
+        margin: '10px',
       }
+
   });
 
 class AutoresTabla extends Component {
@@ -69,7 +78,7 @@ class AutoresTabla extends Component {
     }
 
     handleAdd () {
-
+        this.setState({ open_create : true });
     }
 
     handleSave () {
@@ -125,6 +134,11 @@ class AutoresTabla extends Component {
             if (!this.state.isLoading) {
                 html = (
                     <div>
+
+                        <Button className={classes.addButton} variant="fab" color="primary" aria-label="Add" onClick={this.handleAdd}>
+                            <AddIcon />
+                        </Button>
+
                         <Dialog
                             open={this.state.open_edit}
                             onClose={this.handleClose}

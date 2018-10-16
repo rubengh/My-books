@@ -14,6 +14,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 const styles = theme => ({
     father : {
         position: "relative",
@@ -31,7 +40,68 @@ class AutoresTabla extends Component {
             total_rows: 0,
             num_pages: 0,
             isLoading: true,
+            open_edit: false,
+            open_delete: false,
+            open_create: false,
+            nombre : '',
+            id : ''
         };
+
+        this.handleClose  = this.handleClose.bind(this);
+        this.handleEdit   = this.handleEdit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleAdd    = this.handleAdd.bind(this);
+        this.handleSave   = this.handleSave.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleClose () {
+        this.setState({ open_edit : false, open_delete : false, open_create : false })
+    }
+
+    handleEdit(nombre, id) {
+        this.setState({ open_edit : true, nombre: nombre, id: id});
+    }
+
+    handleDelete () {
+
+    }
+
+    handleAdd () {
+
+    }
+
+    handleSave () {
+        this.setState({ isLoading :  true })
+        axios.put('http://localhost:3000/autor/' + this.state.id, { nombre : this.state.nombre })
+        .then((result) => {
+            axios.get('http://localhost:3000/autor')
+            .then((result) => {
+                this.setState({autores : result.data.results, 
+                    total_rows: result.data.total_rows, 
+                    num_pages: result.data.num_pages,
+                    isLoading: false,
+                    open_edit : false
+                  });
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({ isLoading : false, open_edit : false });
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ isLoading : false, open_edit : false });
+        });
+    }
+
+    handleCreate () {
+
+    }
+
+    handleChange (event) {
+        this.setState( { nombre: event.target.value } );
     }
     
     componentWillMount() {
@@ -55,14 +125,66 @@ class AutoresTabla extends Component {
             if (!this.state.isLoading) {
                 html = (
                     <div>
-                    <h1>Lista de autores</h1>            
-                    { this.state.autores.map(row => {
-                        return (
-                        <ul key={row.id}>
-                            <li>{row.nombre}</li>                
-                        </ul>
-                        );
-                    })}
+                        <Dialog
+                            open={this.state.open_edit}
+                            onClose={this.handleClose}
+                            aria-labelledby="form-dialog-title"
+                        >
+                            <DialogTitle id="form-dialog-title">Modificar Autor</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Introduce el nuevo nombre
+                                </DialogContentText>
+                                <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Nombre"
+                                type="text"
+                                fullWidth
+                                value={this.state.nombre}
+                                onChange={this.handleChange}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={this.handleClose} color="primary">
+                                Cancel
+                                </Button>
+                                <Button onClick={this.handleSave} color="secondary">
+                                Salvar
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <h1>Lista de autores</h1>            
+
+                        <Table className={classes.table}>
+                            <TableHead>
+                            <TableRow>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            {this.state.autores.map(row => {
+                                return (
+                                <TableRow key={row.id}>
+                                    <TableCell component="th" scope="row">
+                                    {row.nombre}
+                                    </TableCell>
+                                    <TableCell style={{textAlign: "right"}}>
+                                        <IconButton aria-label="Editar" size="large" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton aria-label="Borrar" size="large" onClick={this.handleDelete} color='secondary'>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                                );
+                            })}
+                            </TableBody>
+                        </Table>
                     </div>
                 )
             } else {

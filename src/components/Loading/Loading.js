@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
   progress: {
@@ -24,7 +25,10 @@ function Loading(props) {
   return (
     <div className={classes.center}>
       <CircularProgress className={classes.progress} size={props.size} thickness={5}/>
-      <h3 style={{margin : '0'}}>{label}</h3>
+      <Typography style={{margin : '0', fontSize : props.size/4}} color="primary">
+        {label}
+      </Typography>
+      
     </div>
   );
 }

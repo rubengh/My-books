@@ -255,22 +255,6 @@ class EditBook extends Component {
                   />
 
                   <TextField
-                    id="outlined-comment-input"
-                    label="Comentario"
-                    className={classes.textField}
-                    type="text"
-                    name="comentario"
-                    autoComplete="comentario"
-                    margin="normal"
-                    variant="outlined"
-                    value={this.state.comentario}
-                    onChange={this.handleChange}
-                    multiline={true}
-                    rows={1}
-                    rowsMax={4}                                        
-                    />
-
-                  <TextField
                     id="outlined-select-currency-native"
                     select
                     label="Temática"

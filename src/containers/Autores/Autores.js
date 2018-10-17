@@ -19,7 +19,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -259,16 +258,16 @@ class AutoresTabla extends Component {
                             {this.state.autores.map(row => {
                                 return (
                                 <TableRow key={row.id}>
-                                    <TableCell component="th" scope="row">
+                                    <TableCell style={{fontSize: '1rem'}} component="th" scope="row">
                                     {row.nombre}
                                     </TableCell>
                                     <TableCell style={{textAlign: "right"}}>
-                                        <IconButton aria-label="Editar" size="large" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton aria-label="Borrar" size="large" onClick={ () => {this.handleDelete(row.nombre, row.id) } } color='secondary'>
-                                            <DeleteIcon />
-                                        </IconButton>
+                                        <Button aria-label="Editar" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
+                                            <EditIcon/> Editar
+                                        </Button>
+                                        <Button aria-label="Borrar" onClick={ () => {this.handleDelete(row.nombre, row.id) }} color='secondary'>
+                                            <DeleteIcon/> Borrar
+                                        </Button>                                        
                                     </TableCell>
                                 </TableRow>
                                 );

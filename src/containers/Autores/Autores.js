@@ -23,6 +23,7 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
     father : {
@@ -35,6 +36,9 @@ const styles = theme => ({
         top: '0px',
         right: '0px',
         margin: '10px',
+      },
+      modalButton: {
+        width: '100%'
       }
 
   });
@@ -59,22 +63,42 @@ class AutoresTabla extends Component {
         this.handleClose  = this.handleClose.bind(this);
         this.handleEdit   = this.handleEdit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
         this.handleAdd    = this.handleAdd.bind(this);
         this.handleSave   = this.handleSave.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
 
+    getAutores() {
+        axios.get('http://localhost:3000/autor')
+            .then((result) => {
+                this.setState(
+                  { autores : result.data.results, 
+                    total_rows: result.data.total_rows, 
+                    num_pages: result.data.num_pages,
+                    isLoading: false,
+                    open_edit : false,
+                    open_create : false,
+                    open_delete : false,
+                  });
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({ isLoading : false, open_edit : false, open_create: false, open_delete: false });
+            });
+    }
+
     handleClose () {
-        this.setState({ open_edit : false, open_delete : false, open_create : false })
+        this.setState({ open_edit : false, open_delete : false, open_create : false, nombre : '', id : '' })
     }
 
     handleEdit(nombre, id) {
-        this.setState({ open_edit : true, nombre: nombre, id: id});
+        this.setState({ open_edit : true, nombre: nombre, id: id });
     }
 
-    handleDelete () {
-
+    handleDelete (nombre, id) {
+        this.setState({ open_delete : true, nombre: nombre, id: id });
     }
 
     handleAdd () {
@@ -85,20 +109,8 @@ class AutoresTabla extends Component {
         this.setState({ isLoading :  true })
         axios.put('http://localhost:3000/autor/' + this.state.id, { nombre : this.state.nombre })
         .then((result) => {
-            axios.get('http://localhost:3000/autor')
-            .then((result) => {
-                this.setState({autores : result.data.results, 
-                    total_rows: result.data.total_rows, 
-                    num_pages: result.data.num_pages,
-                    isLoading: false,
-                    open_edit : false
-                  });
+                this.getAutores();
             })
-            .catch((error) => {
-                console.log(error);
-                this.setState({ isLoading : false, open_edit : false });
-            });
-        })
         .catch((error) => {
             console.log(error);
             this.setState({ isLoading : false, open_edit : false });
@@ -106,7 +118,25 @@ class AutoresTabla extends Component {
     }
 
     handleCreate () {
+        axios.post('http://localhost:3000/autor', { nombre: this.state.nombre })
+        .then((result) => {
+            this.getAutores();                       
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ isLoading : false, open_create : false });
+        });
+    }
 
+    handleRemove () {
+        axios.delete('http://localhost:3000/autor/'+ this.state.id, { nombre : this.state.nombre } )
+        .then((result) => {
+            this.getAutores(); 
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState( { isLoading: false, open_delete: false } )
+        }) 
     }
 
     handleChange (event) {
@@ -114,17 +144,7 @@ class AutoresTabla extends Component {
     }
     
     componentWillMount() {
-        axios.get('http://localhost:3000/autor')
-        .then ((result) => {
-            this.setState({autores : result.data.results, 
-                           total_rows: result.data.total_rows, 
-                           num_pages: result.data.num_pages,
-                           isLoading: false
-                         });
-        })
-        .catch ((error) => {
-            console.log(error);
-        })
+        this.getAutores();
     }
     
     render () {
@@ -143,6 +163,7 @@ class AutoresTabla extends Component {
                             open={this.state.open_edit}
                             onClose={this.handleClose}
                             aria-labelledby="form-dialog-title"
+                            style={{textAlign: 'center'}}
                         >
                             <DialogTitle id="form-dialog-title">Modificar Autor</DialogTitle>
                             <DialogContent>
@@ -161,11 +182,66 @@ class AutoresTabla extends Component {
                                 />
                             </DialogContent>
                             <DialogActions>
-                                <Button onClick={this.handleClose} color="primary">
-                                Cancel
+                                <Button className={classes.modalButton} onClick={this.handleClose} color="primary">
+                                Cancelar
                                 </Button>
-                                <Button onClick={this.handleSave} color="secondary">
+                                <Button className={classes.modalButton} onClick={this.handleSave} color="secondary">
                                 Salvar
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog
+                            open={this.state.open_create}
+                            onClose={this.handleClose}
+                            aria-labelledby="form-dialog-title"
+                            style={{textAlign: 'center'}}
+                        >
+                            <DialogTitle id="form-dialog-title">Añadir nuevo Autor</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Introduce el nombre del autor
+                                </DialogContentText>
+                                <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Nombre"
+                                type="text"
+                                fullWidth
+                                value={this.state.nombre}
+                                onChange={this.handleChange}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button className={classes.modalButton} onClick={this.handleClose} color="primary">
+                                Cancelar
+                                </Button>
+                                <Button className={classes.modalButton} onClick={this.handleCreate} color="secondary">
+                                Añadir
+                                </Button>
+                            </DialogActions>
+                        </Dialog> 
+
+                        <Dialog
+                            open={this.state.open_delete}
+                            onClose={this.handleClose}
+                            aria-labelledby="form-dialog-title"
+                            style={{textAlign: 'center'}}
+                        >
+                            <DialogTitle id="form-dialog-title">Borrar Autor</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    ¿Deseas borrar el autor?
+                                </DialogContentText>
+                                <Typography style={{ marginTop : '20px'}} color="primary">{this.state.nombre}</Typography>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button className={classes.modalButton} onClick={this.handleClose} color="primary">
+                                Cancelar
+                                </Button>
+                                <Button className={classes.modalButton} onClick={this.handleRemove} color="secondary">
+                                Eliminar
                                 </Button>
                             </DialogActions>
                         </Dialog>
@@ -190,7 +266,7 @@ class AutoresTabla extends Component {
                                         <IconButton aria-label="Editar" size="large" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton aria-label="Borrar" size="large" onClick={this.handleDelete} color='secondary'>
+                                        <IconButton aria-label="Borrar" size="large" onClick={ () => {this.handleDelete(row.nombre, row.id) } } color='secondary'>
                                             <DeleteIcon />
                                         </IconButton>
                                     </TableCell>

@@ -70,7 +70,7 @@ class Libros extends Component {
                 <Button className={classes.addButton} variant="fab" color="primary" aria-label="Add" onClick={this.redirect}>
                     <AddIcon />
                 </Button>
-                <h1 className={classes.title}>Lista de libros</h1>
+                <h1>Lista de libros</h1>
                 { this.state.libros.map(row => {
                     return (
                         <SimpleCard key={row.id}

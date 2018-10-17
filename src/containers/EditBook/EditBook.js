@@ -328,13 +328,13 @@ class EditBook extends Component {
                     ))}
                   </TextField>
 
-                  <Button color="primary" type="submit" value="Submit" variant="contained" size="medium" className={classes.button}>
-                    <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-                    {boton}
+                  <Button color="primary" component={Link} to="/libros" variant="contained" size="medium" className={classes.button}>
+                    Volver
                   </Button>
 
-                  <Button component={Link} to="/libros" color="secondary" variant="contained" size="medium" className={classes.button}>
-                    Volver
+                  <Button color="secondary" type="submit" value="Submit" variant="contained" size="medium" className={classes.button}>
+                    <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                    {boton}
                   </Button>
 
                 </div>

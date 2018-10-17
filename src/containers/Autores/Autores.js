@@ -250,7 +250,7 @@ class AutoresTabla extends Component {
                         <Table className={classes.table}>
                             <TableHead>
                             <TableRow>
-                                <TableCell>Nombre</TableCell>
+                                <TableCell>Autor</TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                             </TableHead>

@@ -245,12 +245,12 @@ class tematicasTabla extends Component {
                             </DialogActions>
                         </Dialog>
 
-                        <h1>Lista de Temáticas</h1>            
+                        <h1>Lista de temáticas</h1>            
 
                         <Table className={classes.table}>
                             <TableHead>
                             <TableRow>
-                                <TableCell>Nombre</TableCell>
+                                <TableCell>Temática</TableCell>
                                 <TableCell></TableCell>
                             </TableRow>
                             </TableHead>

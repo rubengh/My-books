@@ -12,8 +12,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
 import Divider from '@material-ui/core/Divider';
+import Button from '@material-ui/core/Button';
 
-const styles = {
+const styles = theme => ({
   card: {
     minWidth: 275,
     maxWidth: 500,
@@ -34,7 +35,11 @@ const styles = {
   pos: {
     marginBottom: 12,
   },
-};
+  button: {
+    width: '100%',
+    margin: theme.spacing.unit,
+  }
+});
 
 this.state = {
   redirectEdit: false,
@@ -129,12 +134,12 @@ class BookCard extends Component {
         </CardContent>
         <Divider/>
         <CardActions className={classes.actions} disableActionSpacing>
-          <IconButton aria-label="Editar" size="large" onClick={this.redirectEdit} color='primary'>
-            <EditIcon />
-          </IconButton>
-          <IconButton aria-label="Borrar" size="large" onClick={this.delete} color='secondary'>
-            <DeleteIcon />
-          </IconButton>
+          <Button variant="contained" aria-label="Editar" className={classes.button} onClick={this.redirectEdit} color='primary'>
+              <EditIcon/> Editar
+          </Button>
+          <Button variant="contained" aria-label="Borrar" className={classes.button} onClick={this.delete} color='secondary'>
+              <DeleteIcon/> Borrar
+          </Button>           
         </CardActions>
 
 

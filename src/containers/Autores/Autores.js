@@ -38,6 +38,9 @@ const styles = theme => ({
       },
       modalButton: {
         width: '100%'
+      },
+      button: {
+        margin : '8px',
       }
 
   });
@@ -262,10 +265,10 @@ class AutoresTabla extends Component {
                                     {row.nombre}
                                     </TableCell>
                                     <TableCell style={{textAlign: "right"}}>
-                                        <Button aria-label="Editar" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
+                                        <Button className={classes.button} variant="contained" aria-label="Editar" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
                                             <EditIcon/> Editar
                                         </Button>
-                                        <Button aria-label="Borrar" onClick={ () => {this.handleDelete(row.nombre, row.id) }} color='secondary'>
+                                        <Button className={classes.button} variant="contained" aria-label="Borrar" onClick={ () => {this.handleDelete(row.nombre, row.id) }} color='secondary'>
                                             <DeleteIcon/> Borrar
                                         </Button>                                        
                                     </TableCell>

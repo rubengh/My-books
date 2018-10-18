@@ -23,11 +23,9 @@ const styles = theme => ({
     marginRight: '15px',
     marginLeft: '15px',
     display: 'inline-block',
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
+    // marginRight: 'auto',
+    // marginLeft: 'auto',
+    // display: 'block'
   },
   title: {
     fontSize: 14,
@@ -36,7 +34,8 @@ const styles = theme => ({
     marginBottom: 12,
   },
   button: {
-    width: '100%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
     margin: theme.spacing.unit,
   }
 });

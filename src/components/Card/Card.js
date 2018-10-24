@@ -7,7 +7,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Redirect } from 'react-router-dom';
 import { CardHeader } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import axios from 'axios';
@@ -16,8 +15,8 @@ import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   card: {
-    minWidth: 275,
-    maxWidth: 500,
+    minWidth: '250px',
+    maxWidth: '500px',
     marginTop: '10px',
     marginBottom: '10px',
     marginRight: '15px',
@@ -25,7 +24,6 @@ const styles = theme => ({
     display: 'inline-block',
     // marginRight: 'auto',
     // marginLeft: 'auto',
-    // display: 'block'
   },
   title: {
     fontSize: 14,

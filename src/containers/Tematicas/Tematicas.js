@@ -260,7 +260,7 @@ class tematicasTabla extends Component {
                             <TableBody>
                             {this.state.tematicas.map(row => {
                                 return (
-                                <TableRow key={row.id}>
+                                <TableRow key={row.id} hover>
                                     <TableCell style={{fontSize: '1rem'}} component="th" scope="row">
                                     {row.nombre}
                                     </TableCell>

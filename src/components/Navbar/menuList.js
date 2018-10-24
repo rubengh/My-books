@@ -8,6 +8,15 @@ import { Link } from 'react-router-dom';
 export const menu = (
   <div>
 
+  <Link to="/buscar" style={{ textDecoration: 'none' }}>
+    <ListItem button>
+      <ListItemIcon>
+        <StarIcon />
+      </ListItemIcon>
+      <ListItemText primary="Buscar" />
+    </ListItem>
+  </Link>
+
     <Link to="/libros" style={{ textDecoration: 'none' }}>
       <ListItem button>
         <ListItemIcon>

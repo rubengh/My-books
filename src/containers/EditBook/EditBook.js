@@ -12,8 +12,13 @@ import Loading from '../../components/Loading/Loading';
 
 const styles = theme => ({
   container: {
-    // display: 'inline-block',
+    display: 'flex',    
     flexWrap: 'wrap',
+  },
+  containerButtons: {
+    display: 'flex',    
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -27,10 +32,23 @@ const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
     position: 'relative',
-    display: 'inline-block',
-    width: 250,
+    // display: 'block',
+    minWidth: 150,
+    maxWidth: 250,
     textAlign: 'center',
+    display: 'flex',
   },
+
+  button2: {
+    margin: theme.spacing.unit,
+    position: 'relative',
+    // display: 'inline-block',
+    minWidth: 150,
+    maxWidth: 250,
+    textAlign: 'center',
+    display: 'flex',
+  },
+
 
   dense: {
     marginTop: 16,
@@ -311,16 +329,15 @@ class EditBook extends Component {
                       </option>
                     ))}
                   </TextField>
-
+                </div>
+                <div className={classes.containerButtons}>
                   <Button color="primary" component={Link} to="/libros" variant="contained" size="medium" className={classes.button}>
-                    Volver
-                  </Button>
-
-                  <Button color="secondary" type="submit" value="Submit" variant="contained" size="medium" className={classes.button}>
+                      Volver
+                    </Button>
+                  <Button color="secondary" type="submit" value="Submit" variant="contained" size="medium" className={classes.button2}>
                     <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
                     {boton}
-                  </Button>
-
+                  </Button>                
                 </div>
               </form>
             </Paper>

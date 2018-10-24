@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import SimpleCard from '../../components/Card/Card';
 import { Paper, withStyles } from "@material-ui/core";
-import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { Redirect } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
@@ -9,7 +9,7 @@ import AddIcon from '@material-ui/icons/Add';
 const styles = theme => ({
     father : {
         position: "relative",
-        padding: "10px",
+        padding: "10px",        
     },
     title : {
         marginLeft: '10px',
@@ -66,7 +66,7 @@ class Libros extends Component {
           }
 
         html = (
-            <div>
+            <div style={{justifyContent: 'center'}}>
                 <Button className={classes.addButton} variant="fab" color="primary" aria-label="Add" onClick={this.redirect}>
                     <AddIcon />
                 </Button>

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SimpleCard from '../../components/Card/Card';
 import { Paper, withStyles } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
 
 const styles = theme => ({
@@ -59,6 +59,7 @@ class Libros extends Component {
     render () {
         const { classes } = this.props;
         const nuevo = "/libros/nuevo";
+        const backpath = "/libros";
         var html = '';
 
         if (this.state.redirect) {
@@ -67,7 +68,7 @@ class Libros extends Component {
 
         html = (
             <div style={{justifyContent: 'center'}}>
-                <Button className={classes.addButton} variant="fab" color="primary" aria-label="Add" onClick={this.redirect}>
+                <Button component={Link} to={{pathname: nuevo, state: { backpath: backpath } }} className={classes.addButton} variant="fab" color="primary" aria-label="Add">
                     <AddIcon />
                 </Button>
                 <h1>Lista de libros</h1>

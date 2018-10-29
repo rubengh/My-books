@@ -188,7 +188,7 @@ class AutoresTabla extends Component {
                                 Cancelar
                                 </Button>
                                 <Button className={classes.modalButton} onClick={this.handleSave} color="secondary">
-                                Salvar
+                                Guardar
                                 </Button>
                             </DialogActions>
                         </Dialog>
@@ -265,10 +265,10 @@ class AutoresTabla extends Component {
                                     {row.nombre}
                                     </TableCell>
                                     <TableCell style={{textAlign: "right"}}>
-                                        <Button className={classes.button} variant="contained" aria-label="Editar" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
+                                        <Button className={classes.button} aria-label="Editar" onClick={ () => {this.handleEdit(row.nombre, row.id) }} color='primary'>
                                             <EditIcon/> Editar
                                         </Button>
-                                        <Button className={classes.button} variant="contained" aria-label="Borrar" onClick={ () => {this.handleDelete(row.nombre, row.id) }} color='secondary'>
+                                        <Button className={classes.button} aria-label="Borrar" onClick={ () => {this.handleDelete(row.nombre, row.id) }} color='secondary'>
                                             <DeleteIcon/> Borrar
                                         </Button>                                        
                                     </TableCell>

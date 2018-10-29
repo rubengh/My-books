@@ -5,7 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { CardHeader } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -85,6 +85,7 @@ class BookCard extends Component {
     const { classes } = this.props;
     const editar = "/libros/editar/" + this.props.id;
     const borrar = "/libros";
+    const backpath = '/libros';
     
     if (this.state.redirectEdit) {
       return <Redirect to={editar} />
@@ -131,10 +132,11 @@ class BookCard extends Component {
         </CardContent>
         <Divider/>
         <CardActions className={classes.actions} disableActionSpacing>
-          <Button variant="contained" aria-label="Editar" className={classes.button} onClick={this.redirectEdit} color='primary'>
+          <Button aria-label="Editar" color="primary" component={Link} to={{pathname: editar, state: { backpath: backpath } }} size="medium" className={classes.button}>
+          {/* <Button  aria-label="Editar" className={classes.button} onClick={this.redirectEdit} color='primary'> */}
               <EditIcon/> Editar
           </Button>
-          <Button variant="contained" aria-label="Borrar" className={classes.button} onClick={this.delete} color='secondary'>
+          <Button  aria-label="Borrar" className={classes.button} onClick={this.delete} color='secondary'>
               <DeleteIcon/> Borrar
           </Button>           
         </CardActions>

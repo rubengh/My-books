@@ -15,24 +15,20 @@ const styles = theme => ({
     display: 'flex',    
     flexWrap: 'wrap',
   },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 250,
+  },
   containerButtons: {
     display: 'flex',    
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
   },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    display: 'inline-block',
-    position: 'relative',
-    maxWidth: '500px',
-    minWidth: '100px'
-  },
 
   button: {
     margin: theme.spacing.unit,
     position: 'relative',
-    // display: 'block',
     minWidth: 150,
     maxWidth: 250,
     textAlign: 'center',
@@ -191,6 +187,7 @@ class EditBook extends Component {
       render() {
 
         const { classes } = this.props;
+        const { backpath } = this.props.location.state;
         var titulo = '';
         var boton = '';
 
@@ -225,8 +222,7 @@ class EditBook extends Component {
                     variant="outlined"
                     value={this.state.titulo}
                     onChange={this.handleChange}
-                    required
-                    
+                    required                    
                     />
 
                   <TextField
@@ -331,10 +327,10 @@ class EditBook extends Component {
                   </TextField>
                 </div>
                 <div className={classes.containerButtons}>
-                  <Button color="primary" component={Link} to="/libros" variant="contained" size="medium" className={classes.button}>
+                  <Button color="primary" component={Link} to={backpath} size="medium" className={classes.button}>
                       Volver
                     </Button>
-                  <Button color="secondary" type="submit" value="Submit" variant="contained" size="medium" className={classes.button2}>
+                  <Button color="secondary" type="submit" value="Submit" size="medium" className={classes.button2}>
                     <SaveIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
                     {boton}
                   </Button>                

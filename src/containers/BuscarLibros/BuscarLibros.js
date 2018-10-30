@@ -19,7 +19,7 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
-
+import Chip from '@material-ui/core/Chip';
 
 const styles = theme => ({
     father : {
@@ -78,7 +78,12 @@ const styles = theme => ({
         '&:hover': {
           textDecoration: 'underline',
         },
-      },      
+      },
+      resaltado: {
+        '&:hover': {
+            backgroundColor: '#eeeeee'
+          },
+      }      
   });
 
 class BuscarLibros extends Component {
@@ -94,8 +99,10 @@ class BuscarLibros extends Component {
             titulo: '',
             autor: '',
             tematica: '',
+            comprado: '',
             autores_list : [],
             tematicas_list : [],
+            comprado_list : [{id: 'S',nombre: 'Si'}, {id: 'N',nombre: 'No'}],
             expanded: null,
         };
         
@@ -137,7 +144,7 @@ class BuscarLibros extends Component {
 
     getLibros() {
         this.setState({isLoading: true});
-        axios.get('http://localhost:3000/libro', { params: {titulo : this.state.titulo, autor: this.state.autor, tematica: this.state.tematica} })
+        axios.get('http://localhost:3000/libro', { params: {titulo : this.state.titulo, autor: this.state.autor, tematica: this.state.tematica, comprado: this.state.comprado} })
             .then((result) => {
                 this.setState(
                   { libros : result.data.results, 
@@ -175,25 +182,8 @@ class BuscarLibros extends Component {
             titulo: '',
             autor: '',
             tematica: '',
-            isLoading: true,
-        });
-        axios.get('http://localhost:3000/libro', { params: {titulo : '' , autor: '', tematica: ''} })
-            .then((result) => {
-                this.setState(
-                  { libros : result.data.results, 
-                    total_rows: result.data.total_rows, 
-                    num_pages: result.data.num_pages,
-                    isLoading: false,
-                    titulo: '',
-                    autor: '',
-                    tematica: '',
-                    expanded: null
-                  });
-            })
-            .catch((error) => {
-                console.log(error);
-                this.setState({ isLoading : false });
-            });
+            comprado: ''            
+        });        
     }
     
     handleSubmit(event) {
@@ -211,131 +201,175 @@ class BuscarLibros extends Component {
         const backpath = '/buscar';        
             
         var html = '';
+        var htmlHeader = '';
         var autores_list = this.state.autores_list;
         var tematicas_list = this.state.tematicas_list;
+        var comprado_list = this.state.comprado_list;        
         var libros = this.state.libros;
         var editar = '/libros/editar/';
+        var label = "Total registros: " + this.state.total_rows;
 
-            
+        htmlHeader = (
+            <div>
+                <Chip label={label} color="primary"/>
+                <form className={classes.container} onSubmit={this.handleSubmit}>
+                    <TextField
+                    fullWidth
+                    id="titulo"
+                    label="Título"
+                    className={classes.textField}
+                    type="text"
+                    name="titulo"
+                    autoComplete="titulo"
+                    margin="normal"                                  
+                    value={this.state.titulo}
+                    onChange={this.handleChange}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                            <IconButton
+                                aria-label="Limpiar"
+                                onClick={() => {this.handleClean("titulo")}}
+                            >
+                                <ClearIcon/>
+                            </IconButton>
+                            </InputAdornment>
+                        ),
+                        }}
+                    />
+
+                    <TextField
+                        id="autor"
+                        select
+                        label="Autor"
+                        name="autor"
+                        className={classes.textField}
+                        value={this.state.autor}
+                        onChange={this.handleChange}
+                        SelectProps={{
+                        native: true,
+                        MenuProps: {
+                            className: classes.menu,
+                        },
+                        }}
+                        margin="normal"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Limpiar"
+                                    onClick={() => {this.handleClean("autor")}}
+                                >
+                                    <ClearIcon/>
+                                </IconButton>
+                                </InputAdornment>
+                            ),
+                            }}                                                                                                    
+                        >
+                        <option key={undefined} value={undefined}>
+                        
+                        </option>
+                        {autores_list.map(option => (
+                        <option key={option.id} value={option.id}>
+                            {option.nombre}
+                        </option>
+                        ))}
+                    </TextField> 
+
+                    <TextField
+                        id="tematica"
+                        select
+                        label="Temática"
+                        name="tematica"
+                        className={classes.textField}
+                        value={this.state.tematica}
+                        onChange={this.handleChange}
+                        SelectProps={{
+                        native: true,
+                        MenuProps: {
+                            className: classes.menu,
+                        },
+                        }}
+                        margin="normal"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Limpiar"
+                                    onClick={() => {this.handleClean("tematica")}}
+                                >
+                                    <ClearIcon/>
+                                </IconButton>
+                                </InputAdornment>
+                            ),
+                            }}                                                                                                    
+                        >
+                        <option key={undefined} value={undefined}>
+                        
+                        </option>
+                        {tematicas_list.map(option => (
+                        <option key={option.id} value={option.id}>
+                            {option.nombre}
+                        </option>
+                        ))}
+                    </TextField> 
+
+                    <TextField
+                        id="comprado"
+                        select
+                        label="Comprado"
+                        name="comprado"
+                        className={classes.textField}
+                        value={this.state.comprado}
+                        onChange={this.handleChange}
+                        SelectProps={{
+                        native: true,
+                        MenuProps: {
+                            className: classes.menu,
+                        },
+                        }}
+                        margin="normal"
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                <IconButton
+                                    aria-label="Limpiar"
+                                    onClick={() => {this.handleClean("comprado")}}
+                                >
+                                    <ClearIcon/>
+                                </IconButton>
+                                </InputAdornment>
+                            ),
+                            }}                                                                                                    
+                        >
+                        <option key={undefined} value={undefined}>
+                        
+                        </option>
+                        {comprado_list.map(option => (
+                        <option key={option.id} value={option.id}>
+                            {option.nombre}
+                        </option>
+                        ))}
+                    </TextField>                            
+
+                    <Button color="primary" variant="contained" size="small" className={classes.button} onClick={() => {this.handleCleanFilters();}}>
+                        <ClearIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                        Limpiar
+                    </Button>
+                    <Button type="submit" value="Submit" color="primary" variant="contained" size="small" className={classes.button} onClick={() => {this.getLibros()}}>
+                        <SearchIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                        Buscar
+                    </Button>
+                </form>
+            </div>
+        )
+        
             if (!this.state.isLoading) {
                 html = (
-                    <div className={classes.root}>
-
-                        <form className={classes.container} onSubmit={this.handleSubmit}>
-                            <TextField
-                            fullWidth
-                            id="titulo"
-                            label="Título"
-                            className={classes.textField}
-                            type="text"
-                            name="titulo"
-                            autoComplete="titulo"
-                            margin="normal"                                  
-                            value={this.state.titulo}
-                            onChange={this.handleChange}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="Limpiar"
-                                        onClick={() => {this.handleClean("titulo")}}
-                                    >
-                                        <ClearIcon/>
-                                    </IconButton>
-                                    </InputAdornment>
-                                ),
-                                }}
-                            />
-
-                            <TextField
-                                id="autor"
-                                select
-                                label="Autor"
-                                name="autor"
-                                className={classes.textField}
-                                value={this.state.autor}
-                                onChange={this.handleChange}
-                                SelectProps={{
-                                native: true,
-                                MenuProps: {
-                                    className: classes.menu,
-                                },
-                                }}
-                                margin="normal"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="Limpiar"
-                                            onClick={() => {this.handleClean("autor")}}
-                                        >
-                                            <ClearIcon/>
-                                        </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                    }}                                                                                                    
-                                >
-                                <option key={undefined} value={undefined}>
-                                
-                                </option>
-                                {autores_list.map(option => (
-                                <option key={option.id} value={option.id}>
-                                    {option.nombre}
-                                </option>
-                                ))}
-                            </TextField> 
-
-                            <TextField
-                                id="tematica"
-                                select
-                                label="Temática"
-                                name="tematica"
-                                className={classes.textField}
-                                value={this.state.tematica}
-                                onChange={this.handleChange}
-                                SelectProps={{
-                                native: true,
-                                MenuProps: {
-                                    className: classes.menu,
-                                },
-                                }}
-                                margin="normal"
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="Limpiar"
-                                            onClick={() => {this.handleClean("tematica")}}
-                                        >
-                                            <ClearIcon/>
-                                        </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                    }}                                                                                                    
-                                >
-                                <option key={undefined} value={undefined}>
-                                
-                                </option>
-                                {tematicas_list.map(option => (
-                                <option key={option.id} value={option.id}>
-                                    {option.nombre}
-                                </option>
-                                ))}
-                            </TextField> 
-
-                            <Button color="primary" variant="contained" size="small" className={classes.button} onClick={() => {this.handleCleanFilters();}}>
-                                <ClearIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-                                Limpiar
-                            </Button>
-                            <Button type="submit" value="Submit" color="primary" variant="contained" size="small" className={classes.button} onClick={() => {this.getLibros()}}>
-                                <SearchIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-                                Buscar
-                            </Button>
-                        </form> 
-
-                        { libros.map(row => {
+                    <div className={classes.root}> 
+                        { libros.map((row, i) => {
                                 return (
-                                    <ExpansionPanel expanded={expanded === row.id} onChange={this.handleExpand(row.id)} key={row.id}>
+                                    <ExpansionPanel className={classes.resaltado} expanded={expanded === row.id} onChange={this.handleExpand(row.id)} key={row.id}>
                                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                         <div className={classes.column}>
                                             <Typography className={classes.secondaryHeading}>Título</Typography>
@@ -357,7 +391,7 @@ class BuscarLibros extends Component {
                                         </div>
                                         <div className={classes.column}>
                                             <Typography className={classes.secondaryHeading}>Precio</Typography>
-                                            <Typography className={classes.heading}>{row.precio}</Typography>
+                                            <Typography className={classes.heading}>{row.precio}€</Typography>
                                         </div>                               
                                         <div className={classes.column}>
                                             <Typography className={classes.secondaryHeading}>Actividad reciente</Typography>
@@ -366,7 +400,7 @@ class BuscarLibros extends Component {
                                         </ExpansionPanelDetails>
                                         <Divider />
                                         <ExpansionPanelActions>
-                                        <Button size="medium">Cancelar</Button>
+                                        <Button onClick={this.handleExpand(undefined)} size="medium">Cancelar</Button>
                                         <Button component={Link} to={{pathname: editar+row.id, state: { backpath: backpath } }} size="medium" color="primary">Detalle</Button>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>
@@ -382,7 +416,8 @@ class BuscarLibros extends Component {
 
             return(
                 <Paper className={classes.father} >
-                    {html}
+                    {htmlHeader}
+                    {html} 
                 </Paper>
             )
     }    

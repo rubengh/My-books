@@ -110,7 +110,6 @@ class EditBook extends Component {
         autor: undefined,
         precio: undefined,
         tematica: undefined,
-        comentario: undefined,
         comprado: undefined,
         redirect: false,
         loading: true,
@@ -157,7 +156,7 @@ class EditBook extends Component {
 
       handleSubmit(event) {
         
-        alert('Titulo: ' + this.state.titulo + '\nAutor: ' + this.state.autor + '\nPrecio: ' + this.state.precio + '\nTematica: ' + this.state.tematica + '\nComentario: '+ this.state.comentario + '\nComprado: '+ this.state.comprado );
+        alert('Titulo: ' + this.state.titulo + '\nAutor: ' + this.state.autor + '\nPrecio: ' + this.state.precio + '\nTematica: ' + this.state.tematica + '\nComprado: '+ this.state.comprado );
         
         if (this.state.id) {
           axios.put('http://localhost:3000/libro/' + this.state.id, {...this.state})

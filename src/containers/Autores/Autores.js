@@ -104,7 +104,7 @@ class AutoresTabla extends Component {
     }
 
     handleAdd () {
-        this.setState({ open_create : true });
+        this.setState({ open_create : true,  nombre : '', id : '' });
     }
 
     handleSave () {

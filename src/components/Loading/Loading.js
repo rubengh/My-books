@@ -24,7 +24,7 @@ function Loading(props) {
 
   return (
     <div className={classes.center}>
-      <CircularProgress className={classes.progress} size={props.size} thickness={5}/>
+      <CircularProgress className={classes.progress} size={props.size}/>
       <Typography style={{margin : '0', fontSize : props.size/4}} color="primary">
         {label}
       </Typography>

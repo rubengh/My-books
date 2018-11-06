@@ -20,6 +20,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import NumberFormat from 'react-number-format';
 
 const styles = theme => ({
   root: {
@@ -32,9 +33,11 @@ const styles = theme => ({
     flexWrap: 'wrap',
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 250,
+    marginRight: 'auto',
+    marginLeft: 'auto',
+    marginTop: '8px',
+    marginBottom: '8px',
+    width: '75%',
   },
   containerButtons: {
     display: 'flex',    
@@ -116,8 +119,29 @@ this.state = {
   loading: true,
   open_comment: false,
   comentario: '',
-  id_comentario: '',  
+  id_comentario: '',
+  expanded: null,  
 };
+
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={values => {
+        onChange({
+          target: {
+            value: values.value,
+          },          
+        });
+      }}
+      thousandSeparator
+      suffix="€"
+    />
+  );
+}
 
 class EditBook extends Component {
 
@@ -126,8 +150,8 @@ class EditBook extends Component {
       super(props);
 
       this.state = {
-        id: props.match.params.id,
-        titulo: undefined,
+        id: props.match.params.id ? props.match.params.id : -1,
+        titulo: '',
         autor: undefined,
         precio: undefined,
         tematica: undefined,
@@ -145,6 +169,7 @@ class EditBook extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdd    = this.handleAdd.bind(this);
+        this.handleAddLibro = this.handleAddLibro.bind(this);
         this.handleClose  = this.handleClose.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
 
@@ -153,9 +178,8 @@ class EditBook extends Component {
             this.setState({ ...result.data.results[0]});
             axios.get('http://localhost:3000/comentario/', { params: { id_libro: this.state.id } })
             .then ((result) => {
-              this.setState({ comentarios : result.data.results});
+              this.setState({ comentarios : result.data.results, expanded: ((result.data.results.length > 0) ? result.data.results[result.data.results.length-1].id : -1)});
             })
-
           })
           .catch ((error) => {
             console.log(error);
@@ -179,9 +203,21 @@ class EditBook extends Component {
           
       }
 
+     handleExpand = panel => (event, expanded) => {
+        this.setState({
+            expanded: expanded ? panel : false,
+        });
+     }
+
       handleClose () {
         this.setState({ open_comment : false, comentario : '', id_comentario : '' })
       }
+
+      handleChange = name => event => {
+        this.setState({
+          [name]: event.target.value,
+        });
+      };
     
       handleChange(event) {
 
@@ -197,11 +233,19 @@ class EditBook extends Component {
       handleAdd() {
         this.setState({ open_comment : true,  comentario : '', id_comentario : '' });
       }
+
+      handleAddLibro () {
+        this.setState({ open_create_libro : true });
+    }      
       
       handleCreate () {
-        axios.post('http://localhost:3000/comentario', { params: { id_libro: this.state.id, comentario: this.state.comentario, id_usuario : this.state.id_usuario }})
+        axios.post('http://localhost:3000/comentario', { id_libro: this.state.id, comentario: this.state.comentario, id_usuario : this.state.id_usuario })
         .then((result) => {            
             this.setState({ isLoading : false, open_comment : false });
+            axios.get('http://localhost:3000/comentario/', { params: { id_libro: this.state.id } })
+            .then ((result) => {
+              this.setState({ comentarios : result.data.results});
+            })            
         })
         .catch((error) => {
             console.log(error);
@@ -210,13 +254,10 @@ class EditBook extends Component {
     }
 
       handleSubmit(event) {
-        
-        alert('Titulo: ' + this.state.titulo + '\nAutor: ' + this.state.autor + '\nPrecio: ' + this.state.precio + '\nTematica: ' + this.state.tematica + '\nComprado: '+ this.state.comprado );
-        
-        if (this.state.id) {
+                
+        if (this.state.id && this.state.id !== -1) {
           axios.put('http://localhost:3000/libro/' + this.state.id, {...this.state})
-          .then ((result) => {
-            console.log(result);  
+          .then ((result) => {  
             this.setState({redirect: true});        
           })
           .catch ((error) => {
@@ -226,7 +267,6 @@ class EditBook extends Component {
         else {  
           axios.post('http://localhost:3000/libro', {...this.state})
           .then ((result) => {
-            console.log(result);  
             this.setState({redirect: true});   
           })
           .catch ((error) => {
@@ -242,11 +282,20 @@ class EditBook extends Component {
 
         const { classes } = this.props;
         const { backpath } = this.props.location.state;
-        const { comentarios } = this.state;
+        const { comentarios, expanded } = this.state;
         var titulo = '';
         var boton = '';
+        var htmlComentario = this.state.id && this.state.id !== -1 ? (
+          <Button style={{margin: 'auto', marginTop: '10px'}} color="primary" variant="contained" size="small" className={classes.button} onClick={this.handleAdd}>
+          <AddIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+          Añadir comentario
+          </Button>
+        ) : '';
+        var htmlComentarioTitulo = this.state.id && this.state.id !== -1 && comentarios.length > 0 ? (
+          <h3 style={{textAlign :'center'}}>Comentarios</h3> 
+        ) : '';
 
-        if (this.state.id) {
+        if (this.state.id && this.state.id !== -1) {
           titulo = 'Editar libro';
           boton = 'Actualizar';
         }
@@ -276,7 +325,7 @@ class EditBook extends Component {
                     margin="normal"
                     variant="outlined"
                     value={this.state.titulo}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange('titulo')}
                     required                    
                     />
 
@@ -287,7 +336,7 @@ class EditBook extends Component {
                     name="autor"
                     className={classes.textField}
                     value={this.state.autor}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange('autor')}
                     SelectProps={{
                       native: true,
                       MenuProps: {
@@ -309,19 +358,20 @@ class EditBook extends Component {
                   </TextField>               
 
                   <TextField
-                    id="outlined-price-input"
-                    label="Precio"
                     className={classes.textField}
-                    type="number"
+                    label="Precio"
                     name="precio"
                     autoComplete="precio"
                     margin="normal"
                     variant="outlined"
                     value={this.state.precio}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange('precio')}
+                    id="outlined-price-input"
                     required
-                    
-                  />
+                    InputProps={{
+                      inputComponent: NumberFormatCustom,
+                    }}
+                  />                  
 
                   <TextField
                     id="outlined-select-currency-native"
@@ -330,7 +380,7 @@ class EditBook extends Component {
                     name="tematica"
                     className={classes.textField}
                     value={this.state.tematica}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange('tematica')}
                     SelectProps={{
                       native: true,
                       MenuProps: {
@@ -359,7 +409,7 @@ class EditBook extends Component {
                     name="comprado"
                     className={classes.textField}
                     value={this.state.comprado}
-                    onChange={this.handleChange}
+                    onChange={this.handleChange('comprado')}
                     SelectProps={{
                       native: true,
                       MenuProps: {
@@ -393,33 +443,31 @@ class EditBook extends Component {
               </form>
             
             <div className={classes.root}>
-              <h3 style={{textAlign :'center', display: comentarios.length > 0 ? 'block' : 'none'}}>Comentarios</h3>           
+              {htmlComentarioTitulo}          
               { comentarios.map((row, i) => {
                 return (
-              <ExpansionPanel className={classes.resaltado} key={row.id}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <div className={classes.column}>
-                  <Typography className={classes.heading}>Usuario: {row.nombre_usuario}</Typography>
-                </div>
-                <div className={classes.column}>
-                  <Typography className={classes.heading}>Creación: {new Date(row.fecha_creacion).toLocaleString()}</Typography>
-                </div>
-                <div className={classes.column} style={{display: row.fecha_modificacion ? 'block' : 'none'}}>
-                  <Typography className={classes.heading}>Editado: {new Date(row.fecha_modificacion).toLocaleString()}</Typography>
-                </div>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <Typography>
-                    {row.comentario}
-                  </Typography>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
+                  <ExpansionPanel className={classes.resaltado} expanded={expanded === row.id} onChange={this.handleExpand(row.id)} key={row.id}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <div className={classes.column}>
+                      <Typography className={classes.heading}>Usuario: {row.nombre_usuario}</Typography>
+                    </div>
+                    <div className={classes.column}>
+                      <Typography className={classes.heading}>Creación: {new Date(row.fecha_creacion).toLocaleString()}</Typography>
+                    </div>
+                    <div className={classes.column} style={{display: row.fecha_modificacion ? 'block' : 'none'}}>
+                      <Typography className={classes.heading}>Editado: {new Date(row.fecha_modificacion).toLocaleString()}</Typography>
+                    </div>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                      <Typography>
+                        {row.comentario}
+                      </Typography>
+                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
                 );
               })}
-              <Button style={{margin: 'auto', marginTop: '10px'}} color="primary" variant="contained" size="small" className={classes.button} onClick={this.handleAdd}>
-                  <AddIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
-                  Añadir comentario
-              </Button>
+              
+            {htmlComentario}
 
             </div>
               <Dialog
@@ -431,7 +479,7 @@ class EditBook extends Component {
                   <DialogTitle id="form-dialog-title">Añadir comentario</DialogTitle>
                   <DialogContent>
                       <DialogContentText>
-                          Introduce el nuevo nombre
+                          Introduce un nuevo comentario
                       </DialogContentText>
                       <TextField
                       autoFocus
@@ -442,7 +490,7 @@ class EditBook extends Component {
                       fullWidth
                       name="comentario"
                       value={this.state.comentario}
-                      onChange={this.handleChange}
+                      onChange={this.handleChange('comentario')}
                       />
                   </DialogContent>
                   <DialogActions>

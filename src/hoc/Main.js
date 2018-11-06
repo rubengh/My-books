@@ -9,13 +9,13 @@ import BuscarLibros from '../containers/BuscarLibros/BuscarLibros';
 
 const Main = () => (
     <Switch>      
-      <Route exact path='/buscar' component={BuscarLibros}></Route>
-      <Route exact path='/libros' component={LibrosTabla}></Route>
+      <Route exact path='/libros' component={BuscarLibros}></Route>
+      {/* <Route exact path='/libros' component={LibrosTabla}></Route> */}
       <Route exact path='/libros/editar/:id' component={EditBook} params={'back'}></Route>
       <Route exact path='/libros/nuevo' component={EditBook}></Route>
       <Route exact path='/autores' component={AutoresTabla}></Route>
       <Route exact path='/tematicas' component={TematicasTabla}></Route>
-      <Route path='*' component={BuscarLibros}></Route>
+      {/* <Route path='*' component={BuscarLibros}></Route> */}
     </Switch>
   );
 

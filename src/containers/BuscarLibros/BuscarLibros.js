@@ -7,6 +7,8 @@ import { Paper } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
 import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -55,7 +57,7 @@ const styles = theme => ({
       },
       secondaryHeading: {
         fontSize: theme.typography.pxToRem(15),
-        color: theme.palette.text.secondary,
+        // color: theme.palette.text.secondary,
       },
       icon: {
         verticalAlign: 'bottom',
@@ -66,7 +68,8 @@ const styles = theme => ({
         alignItems: 'center',
       },
       column: {
-        flexBasis: '33.33%',
+        flexBasis: '50%',
+        textAlign: 'center'
       },
       helper: {
         borderLeft: `2px solid ${theme.palette.divider}`,
@@ -134,6 +137,7 @@ class BuscarLibros extends Component {
             this.handleClean        = this.handleClean.bind(this);
             this.handleCleanFilters = this.handleCleanFilters.bind(this);
             this.handleSubmit       = this.handleSubmit.bind(this);
+            this.handleDelete       = this.handleDelete.bind(this);
         }
         
     handleExpand = panel => (event, expanded) => {
@@ -171,6 +175,17 @@ class BuscarLibros extends Component {
 
       }
 
+    handleDelete(event, id) {    
+
+        axios.delete('http://localhost:3000/libro/' + event)
+            .then ((result) => {
+                this.getLibros();
+            })
+            .catch ((error) => {
+                console.log(error);
+            });
+      }
+
     handleClean(name) {
         this.setState({
            [name]: ''
@@ -198,8 +213,9 @@ class BuscarLibros extends Component {
     render () {
         const { classes } = this.props;
         const { expanded } = this.state;      
-        const backpath = '/buscar';        
-            
+        const backpath = '/libros';        
+        const nuevo = "/libros/nuevo";
+
         var html = '';
         var htmlHeader = '';
         var autores_list = this.state.autores_list;
@@ -360,6 +376,12 @@ class BuscarLibros extends Component {
                         <SearchIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
                         Buscar
                     </Button>
+
+                    <Button component={Link} to={{pathname: nuevo, state: { backpath: backpath } }} className={classes.button} variant="contained" color="primary" aria-label="Add">
+                        <AddIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+                        Nuevo
+                    </Button>
+
                 </form>
             </div>
         )
@@ -372,35 +394,39 @@ class BuscarLibros extends Component {
                                     <ExpansionPanel className={classes.resaltado} expanded={expanded === row.id} onChange={this.handleExpand(row.id)} key={row.id}>
                                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                         <div className={classes.column}>
-                                            <Typography className={classes.secondaryHeading}>Título</Typography>
+                                            <Typography color='primary' className={classes.secondaryHeading}>Título</Typography>
                                             <Typography className={classes.heading}>{row.titulo}</Typography>
                                         </div>
                                         <div className={classes.column}>
-                                            <Typography className={classes.secondaryHeading}>Autor</Typography>
+                                            <Typography color='primary' className={classes.secondaryHeading}>Autor</Typography>
                                             <Typography className={classes.heading}>{row.nombre_autor}</Typography>
                                         </div>
-                                        <div className={classes.column}>
-                                            <Typography className={classes.secondaryHeading}>Temática</Typography>
-                                            <Typography className={classes.heading}>{row.nombre_tematica}</Typography>
-                                        </div>
+
                                         </ExpansionPanelSummary>
                                         <ExpansionPanelDetails className={classes.details}>
+                                        <div className={classes.column}>
+                                            <Typography color='primary' className={classes.secondaryHeading}>Temática</Typography>
+                                            <Typography className={classes.heading}>{row.nombre_tematica}</Typography>
+                                        </div>
                                         <div className={classes.column}> 
-                                            <Typography className={classes.secondaryHeading}>Comprado</Typography>
+                                            <Typography color='primary' className={classes.secondaryHeading}>Comprado</Typography>
                                             <Typography className={classes.heading}>{row.comprado}</Typography>
                                         </div>
                                         <div className={classes.column}>
-                                            <Typography className={classes.secondaryHeading}>Precio</Typography>
+                                            <Typography color='primary' className={classes.secondaryHeading}>Precio</Typography>
                                             <Typography className={classes.heading}>{row.precio}€</Typography>
                                         </div>                               
                                         <div className={classes.column}>
-                                            <Typography className={classes.secondaryHeading}>Actividad reciente</Typography>
+                                            <Typography color='primary' className={classes.secondaryHeading}>Comentario más reciente</Typography>
                                             <Typography className={classes.heading}>Aquí irá el comentario más reciente</Typography>
                                         </div>
                                         </ExpansionPanelDetails>
                                         <Divider />
                                         <ExpansionPanelActions>
-                                        <Button onClick={this.handleExpand(undefined)} size="medium">Cancelar</Button>
+                                        <Button style={{marginRight : 'auto'}} aria-label="Borrar" className={classes.button} onClick={() => this.handleDelete(row.id)} color='secondary'>
+                                            <DeleteIcon/> Borrar
+                                        </Button>  
+                                        <Button onClick={this.handleExpand(undefined)} size="medium">Cerrar</Button>
                                         <Button component={Link} to={{pathname: editar+row.id, state: { backpath: backpath } }} size="medium" color="primary">Detalle</Button>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>
